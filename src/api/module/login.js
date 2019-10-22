@@ -1,9 +1,9 @@
 // 登录相关
-import RequestPC from '../index';
+import RequestPC from '@/api/index';
 
 import { 
 	LOGIN,
-} from '@/api/rootPath';
+} from '@/api/rpath';
 
 class RequestLogin extends RequestPC {
 	constructor() {
@@ -28,3 +28,5 @@ class RequestLogin extends RequestPC {
 		return await this.post(LOGIN, params, this.authOption)
 	}
 }
+
+export default new RequestLogin();

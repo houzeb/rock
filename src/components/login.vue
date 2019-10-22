@@ -1,22 +1,18 @@
-<!--
-    登陆页面
-    马可
-    2018-9-15
--->
+
 <template>
-    <div id="login" :style="{'background-image': url(`${rootPath}static/img/login/login-bg.jpg`)}">
+    <div id="login" :style="{'backgroundImage': `url(${rootPath}static/img/login/login-bg.jpg)`}">
         <div class="login-box">
             <div class="login-box-cont">
                 <div class="login-box-title">后台管理登录</div>
                 <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="0">
                     <FormItem label="" prop="account">
                         <Input class="ipt-btn" placeholder="请输入账号" type="text" :maxlength="11" v-model="formCustom.account">
-                        <img :src="`${rootPath}static/img/login/account.png`" alt="这是张图片">
+                        <img :src="`${rootPath}static/img/login/account.png`" slot="prefix" alt="这是张图片">
                         </Input>
                     </FormItem>
                     <FormItem label="" prop="password">
                         <Input class="ipt-btn" placeholder="请输入密码" type="password" v-model="formCustom.password">
-                        <img :src="`${rootPath}static/img/login/password.png`" slot="prefix" alt="" />
+                        <img :src="`${rootPath}static/img/login/password.png`" slot="prefix" alt="这是张图片" />
                         </Input>
                     </FormItem>
                 </Form>
@@ -27,103 +23,7 @@
         </div>
     </div>
 </template>
-<style lang="less">
-#login {
-    .login-box-cont {
-        .ivu-form-item {
-            padding-bottom: 10px;
 
-            .ivu-form-item-content {
-                text-align: center;
-
-                .ivu-input {
-                    width: 460px;
-                    margin: 0 auto;
-                    height: 80px;
-                    border: 1px solid rgba(4, 158, 237, 1);
-                    border-radius: 10px;
-                    padding: 0 0 0 80px;
-                    font-size: 24px;
-                    color: #999999;
-                }
-
-                .ivu-input-prefix {
-                    left: 65px;
-
-                    img {
-                        margin-top: 20px;
-                    }
-                }
-
-                .ivu-form-item-error-tip {
-                    font-size: 20px;
-                    left: 40px;
-                }
-            }
-        }
-
-        .ivu-form-item:nth-child(1) {
-            .ivu-input-prefix {
-                img {
-                    width: 32px;
-                    height: 32px;
-                }
-            }
-        }
-
-        .ivu-form-item:nth-child(2) {
-            .ivu-input-prefix {
-                img {
-                    width: 26px;
-                    height: 30px;
-                }
-            }
-        }
-
-        .ivu-btn {
-            width: 100%;
-            height: 80px;
-            border-radius: 10px;
-            font-size: 30px;
-        }
-    }
-}
-</style>
-<style lang="less" scoped>
-#login {
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 100%;
-
-    .login-box {
-        position: relative;
-
-        .login-box-cont {
-            transform: scale(0.7);
-            border-radius: 20px;
-            box-shadow: 0px 13px 30px 0px rgba(0, 0, 0, 0.15);
-            position: absolute;
-            top: 160px;
-            right: 300px;
-            width: 540px;
-            background-color: #fff;
-
-            .login-box-title {
-                color: #059fed;
-                font-size: 60px;
-                font-weight: 650;
-                margin: 40px auto;
-                text-align: center;
-            }
-
-            .login-box-button {
-                width: 460px;
-                margin: 40px auto 110px;
-            }
-        }
-    }
-}
-</style>
 <script>
 import docCookies from "@/lib/cookies";
 import RequestLogin from '@/api/module/login';
@@ -198,22 +98,26 @@ export default {
             let that = this;
             this.$refs[name].validate(valid => {
                 if (valid) {
-                    let params = {
-                        ...this.formCustom
-                    }
-                    let res = RequestLogin.Login(params);
-                    let data = res.data;
-                    if (data.resultCode == "0") {
-                        docCookies.setItem("loginInfo", JSON.stringify(data.data));
-                        that.$router.push({
-                            path: "/index"
-                        });
-                        that.handleReset(name);
-                    } else {
-                        that.$Message.error(data.result);
-                    }
+                    that.login(name);
                 }
             });
+        },
+        async login (name) {
+            let params = {
+                ...this.formCustom
+            }
+            let res = await RequestLogin.Login(params);
+            console.log(res)
+            let data = res.data;
+            if (data.resultCode == "0") {
+                docCookies.setItem("loginInfo", JSON.stringify(data.data));
+                this.$router.push({
+                    path: "/index"
+                });
+                this.handleReset(name);
+            } else {
+                this.$Message.error(data.result);
+            }
         },
         handleReset(name) {
             this.$refs[name].resetFields();
@@ -221,3 +125,102 @@ export default {
     }
 };
 </script>
+
+<style lang="less">
+#login {
+    .login-box-cont {
+        .ivu-form-item {
+            padding-bottom: 10px;
+
+            .ivu-form-item-content {
+                text-align: center;
+
+                .ivu-input {
+                    width: 460px;
+                    margin: 0 auto;
+                    height: 80px;
+                    border: 1px solid rgba(4, 158, 237, 1);
+                    border-radius: 10px;
+                    padding: 0 0 0 80px;
+                    font-size: 24px;
+                    color: #999999;
+                }
+
+                .ivu-input-prefix {
+                    left: 65px;
+
+                    img {
+                        margin-top: 20px;
+                    }
+                }
+
+                .ivu-form-item-error-tip {
+                    font-size: 20px;
+                    left: 40px;
+                }
+            }
+        }
+
+        .ivu-form-item:nth-child(1) {
+            .ivu-input-prefix {
+                img {
+                    width: 32px;
+                    height: 32px;
+                }
+            }
+        }
+
+        .ivu-form-item:nth-child(2) {
+            .ivu-input-prefix {
+                img {
+                    width: 26px;
+                    height: 30px;
+                }
+            }
+        }
+
+        .ivu-btn {
+            width: 100%;
+            height: 80px;
+            border-radius: 10px;
+            font-size: 30px;
+        }
+    }
+}
+</style>
+
+<style lang="less" scoped>
+#login {
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+
+    .login-box {
+        position: relative;
+
+        .login-box-cont {
+            transform: scale(0.7);
+            border-radius: 20px;
+            box-shadow: 0px 13px 30px 0px rgba(0, 0, 0, 0.15);
+            position: absolute;
+            top: 160px;
+            right: 300px;
+            width: 540px;
+            background-color: #fff;
+
+            .login-box-title {
+                color: #059fed;
+                font-size: 60px;
+                font-weight: 650;
+                margin: 40px auto;
+                text-align: center;
+            }
+
+            .login-box-button {
+                width: 460px;
+                margin: 40px auto 110px;
+            }
+        }
+    }
+}
+</style>

@@ -25,7 +25,7 @@ export default new VueRouter({
         { path: "/login", name: 'Login', component: Login },
         {
             path: "/index",
-            redirect: '/systemConfig',
+            redirect: '/system-config',
             component: Index,
             children: [
                 { path: '/system-config', name: '系统配置', component: SystemConfig },
@@ -42,7 +42,6 @@ export default new VueRouter({
         }
     },
     beforeEach(to, from, next) {
-        console.log(to, from, next)
         if (to.matched.length === 0) {
             from.name ? next({
                 name: from.name
